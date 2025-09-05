@@ -35,45 +35,36 @@ INSTRUCTION = (
     "- \"explanation\": a concise reason based on visual inconsistencies or forensic indicators"
 )
 '''
-INSTRUCTION = (
-    """
-    You are an expert in deepfake detection and forensic image analysis.
-    You are given one or several consecutive frames from a video.
+INSTRUCTION = """
+    You are a forensic video analyst. You are given one or several consecutive frames from a video.
 
-    Your task is to carefully analyze ONLY the provided frames and decide if they look authentic or manipulated.
-    Focus on forensic indicators such as:
-    - lighting consistency (direction, shadows, background match),
-    - skin texture (pores, wrinkles, over-smoothing),
-    - eye and mouth dynamics (blinks, lip sync, teeth, tongue),
-    - contour and blending (edges of hair/ears/face),
-    - temporal artifacts (flickering, warping, ghosting),
-    - head pose and geometry consistency.
+    Task:
+    - Analyze ONLY the provided frames.
+    - Report short, technical forensic observations related to:
+    lighting & shadows, skin texture, eye dynamics (blink/gaze), mouth/lip motion,
+    contour/blending, head pose/3D geometry, temporal artifacts, face-background separation,
+    accessories consistency, and expressive dynamics.
 
-    Respond STRICTLY in valid JSON format with exactly these keys:
+    Important:
+    - DO NOT classify as real or deepfake.
+    - DO NOT add extra text. Output JSON only.
+
+    Respond STRICTLY in valid JSON with exactly this structure:
     {
-    "label": "real" or "deepfake",
-    "confidence": float between 0.0 and 1.0,
-    "explanation": "one short sentence with the main forensic reason"
+    "observations": ["short clue 1", "short clue 2", "..."]
     }
     """
-)
+
 PROMPTS = [
-    # Lighting / shadows
-    "Is the facial lighting direction and shadow placement consistent with the background and across frames?",
-    # Skin texture
-    "Does the skin show natural pores and wrinkles, or is it overly smooth, plastic-like, or inconsistent?",
-    # Eye blinking
-    "Are the blinks natural in frequency and duration, or do they appear robotic or absent?",
-    # Eye gaze
-    "Do the eyes track consistently and remain aligned without jitter or unnatural reflections?",
-    # Mouth / lip sync
-    "Do the lips, teeth, and tongue move naturally and in sync with expressions, without glitches?",
-    # Contour / blending
-    "Are the boundaries of face, hair, and ears clean and stable, without flicker or halo artifacts?",
-    # Head pose / 3D geometry
-    "Does the head pose transition smoothly without abrupt jumps or distorted proportions?",
-    # Temporal artifacts
-    "Do facial regions show flicker, smearing, or ghosting between frames?",
-    # Expressions
-    "Are expressions fluid and natural, or overly stiff and repetitive?"
+    "List lighting/shadow inconsistencies or matches across the face and background.",
+    "List skin texture cues (pores, wrinkles, plastic smoothing, inconsistencies).",
+    "List eye-related cues (blink frequency/regularity, gaze stability/reflections).",
+    "List mouth/lip/teeth/tongue motion cues (sync, glitches, detachment).",
+    "List contour/blending issues (halo, edge flicker, warping around hair/ears).",
+    "List head pose/3D geometry cues (abrupt jumps, distortion, proportion shifts).",
+    "List temporal artifacts (flicker, smearing, ghosting across frames).",
+    "List face-background separation cues (boundary clarity, color bleeding).",
+    "List accessories consistency cues (glasses/earrings deformation, alignment).",
+    "List expressive dynamics cues (stiffness, lack of micro-movements).",
 ]
+

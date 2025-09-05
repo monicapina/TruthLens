@@ -17,7 +17,7 @@ class VideoProcessor:
             if i > indices[-1]: break
             if i in indices:
                 frames.append(Image.fromarray(frame.to_ndarray(format="rgb24")).resize(self.frame_size))
-        print(f"✅ Extracted {len(frames)} frames.")
+        #print(f"✅ Extracted {len(frames)} frames.")
         return frames
     
     def save_frames_to_folder(self, output_dir):
@@ -31,17 +31,39 @@ class VideoProcessor:
             frame.save(frame_path)
             saved_paths.append(frame_path)
 
-        print(f"🖼️ Saved {len(saved_paths)} frames to '{output_dir}'")
+        #print(f"🖼️ Saved {len(saved_paths)} frames to '{output_dir}'")
         return saved_paths
 
     def get_expected_label(self):
         """
-        Extrae la etiqueta esperada ('real' o 'deepfake') a partir del nombre o ruta del vídeo.
+        Extrae la etiqueta esperada ('real' o 'deepfake') a partir de la ruta del vídeo.
+        - 'Original_videos'  -> real
+        - 'Manipulated_videos' -> deepfake
         """
         path_lower = self.video_path.lower()
-        if "real" in path_lower:
+
+        if "original_videos" in path_lower:
             return "real"
-        elif "fake" in path_lower or "deepfake" in path_lower:
+        elif "manipulated_videos" in path_lower:
             return "deepfake"
         else:
             return "unknown"
+        
+    def get_ethnicity_gender(self):
+        """
+        Extrae (ethnicity, gender) de la ruta:
+        .../(Original_videos|Manipulated_videos)/<Ethnicity>/<Gender>/file.mp4
+        """
+        parts = self.video_path.replace("\\", "/").split("/")
+        try:
+            # Busca el índice del folder raíz
+            if "Original_videos" in parts:
+                i = parts.index("Original_videos")
+            else:
+                i = parts.index("Manipulated_videos")
+            ethnicity = parts[i + 1] if i + 1 < len(parts) else None
+            gender = parts[i + 2] if i + 2 < len(parts) else None
+        except ValueError:
+            ethnicity, gender = None, None
+        return ethnicity, gender
+
